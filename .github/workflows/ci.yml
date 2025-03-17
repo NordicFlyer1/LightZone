@@ -17,6 +17,15 @@ jobs:
       with:
         java-version: ${{ matrix.java }}
         distribution: 'liberica'
+    - name: Cache Gradle dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          gradle-${{ runner.os }}-
     - name: Install MSYS2 on Windows
       if: startsWith(matrix.os, 'windows')
       uses: msys2/setup-msys2@v2
