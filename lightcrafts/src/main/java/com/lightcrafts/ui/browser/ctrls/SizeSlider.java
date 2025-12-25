@@ -19,12 +19,6 @@ public class SizeSlider extends Box {
     private final static Preferences Prefs =
         Preferences.userRoot().node("/com/lightcrafts/ui/browser/ctrls");
     private final static String SizeKey = "SizeSlider";
-
-//    private final static Icon SmallIcon =
-//        ButtonFactory.getIconByName("thumbshrink", 12);
-//    private final static Icon BigIcon =
-//        ButtonFactory.getIconByName("thumbgrow", 12);
-
     private final static int MinSize = 80;
     private final static int MaxSize = 320;
     private final static int DefaultSize = 144;
