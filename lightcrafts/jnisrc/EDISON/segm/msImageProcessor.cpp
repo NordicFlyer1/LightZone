@@ -364,12 +364,6 @@ void msImageProcessor::Filter(int sigmaS, float sigmaR, SpeedUpLevel speedUpLeve
 	if(ErrorStatus == EL_ERROR)
 		return;
 
-	//If the algorithm has been halted, then exit
-	if((ErrorStatus = msSys.Progress((float)(0.0))) == EL_HALT)
-	{
-		return;
-	}
-	
 	//If the image has just been read then allocate memory
 	//for and initialize output data structure used to store
 	//image modes and their corresponding regions...
@@ -390,12 +384,6 @@ void msImageProcessor::Filter(int sigmaS, float sigmaR, SpeedUpLevel speedUpLeve
 		ErrorHandler("msImageProcessor", "Allocate", "Not enough memory.");
 		return;
 	}
-
-	//start timer
-#ifdef PROMPT
-	double timer;
-	msSys.StartTimer();
-#endif
 
 	//*****************************************************
 
@@ -433,14 +421,6 @@ void msImageProcessor::Filter(int sigmaS, float sigmaR, SpeedUpLevel speedUpLeve
 
 	//*******************************************************
 
-	//If the algorithm has been halted, then de-allocate the output
-	//and exit
-	if((ErrorStatus = msSys.Progress((float)(0.8))) == EL_HALT)
-	{
-		DestroyOutput();
-		return;
-	}
-
 	//Label image regions, also if segmentation is not to be
 	//performed use the resulting classification structure to
 	//calculate the image boundaries...
@@ -464,21 +444,9 @@ void msImageProcessor::Filter(int sigmaS, float sigmaR, SpeedUpLevel speedUpLeve
    }
 
 
-#ifdef PROMPT
-	timer	= msSys.ElapsedTime();
-	msSys.Prompt("(%6.2f sec)\nConnecting regions         ...", timer);
-	msSys.StartTimer();
-#endif
-	
 	//Perform connecting (label image regions) using LUV_data
 	Connect();
 	
-#ifdef PROMPT
-	timer	= msSys.ElapsedTime();
-	msSys.Prompt("done. (%6.2f seconds, numRegions = %6d)\n", timer, regionCount);
-	msSys.StartTimer();
-#endif
-
 	//done.
 	return;
 
@@ -526,14 +494,6 @@ void msImageProcessor::FuseRegions(float sigmaS, int minRegion)
 	if(ErrorStatus == EL_ERROR)
 		return;
 
-	//Check to see if the algorithm is to be halted, if so then
-	//destroy output and exit
-	if((ErrorStatus = msSys.Progress((float)(0.8))) == EL_HALT)
-	{
-		if(class_state.OUTPUT_DEFINED)	DestroyOutput();
-		return;
-	}
-
 	//obtain sigmaS (make sure it is not zero or negative, if not
 	//flag an error)
 	if((h[1] = sigmaS) <= 0)
@@ -573,37 +533,13 @@ void msImageProcessor::FuseRegions(float sigmaS, int minRegion)
          LUV_data[i] = data[i];
       }
 		
-#ifdef PROMPT
-		msSys.Prompt("Connecting regions         ...");
-		msSys.StartTimer();
-#endif
-
 		//Perform connecting (label image regions) using LUV_data
 		Connect();
 		
 		//check for errors
 		if(ErrorStatus == EL_ERROR)
 			return;
-		
-#ifdef PROMPT
-		double timer	= msSys.ElapsedTime();
-		msSys.Prompt("done. (%6.2f seconds, numRegions = %6d)\n", timer, regionCount);
-#endif
-		
 	}
-
-	//Check to see if the algorithm is to be halted, if so then
-	//destroy output and exit
-	if((ErrorStatus = msSys.Progress((float)(0.85))) == EL_HALT)
-	{
-		DestroyOutput();
-		return;
-	}
-
-#ifdef PROMPT
-	msSys.Prompt("Applying transitive closure...");
-	msSys.StartTimer();
-#endif
 
 	//allocate memory visit table
 	visitTable = new unsigned char [L];
@@ -626,39 +562,9 @@ void msImageProcessor::FuseRegions(float sigmaS, int minRegion)
 	delete [] visitTable;
 	visitTable	= NULL;
 
-	//Check to see if the algorithm is to be halted, if so then
-	//destroy output and region adjacency matrix and exit
-	if((ErrorStatus = msSys.Progress((float)(1.0))) == EL_HALT)
-	{
-		DestroyRAM();
-		DestroyOutput();
-		return;
-	}
-
-#ifdef PROMPT
-	double timer	= msSys.ElapsedTime();
-	msSys.Prompt("done. (%6.2f seconds, numRegions = %6d)\nPruning spurious regions   ...", timer, regionCount);
-	msSys.StartTimer();
-#endif
-
 	//Prune spurious regions (regions whose area is under
 	//minRegion) using RAM
 	Prune(minRegion);
-
-#ifdef PROMPT
-	timer	= msSys.ElapsedTime();
-	msSys.Prompt("done. (%6.2f seconds, numRegions = %6d)\n", timer, regionCount);
-	msSys.StartTimer();
-#endif
-
-	//Check to see if the algorithm is to be halted, if so then
-	//destroy output and region adjacency matrix and exit
-	if((ErrorStatus = msSys.Progress((float)(1.0))) == EL_HALT)
-	{
-		DestroyRAM();
-		DestroyOutput();
-		return;
-	}
 
 	//de-allocate memory for region adjacency matrix
 	DestroyRAM();
@@ -730,19 +636,6 @@ void msImageProcessor::Segment(int sigmaS, float sigmaR, int minRegion, SpeedUpL
 	if(ErrorStatus == EL_HALT)
 		return;
 
-	//Check to see if the algorithm is to be halted, if so then
-	//destroy output and exit
-	if((ErrorStatus = msSys.Progress((float)(0.85))) == EL_HALT)
-	{
-		DestroyOutput();
-		return;
-	}
-
-#ifdef PROMPT
-	msSys.Prompt("Applying transitive closure...");
-	msSys.StartTimer();
-#endif
-
 	//allocate memory visit table
 	visitTable = new unsigned char [L];
 
@@ -764,39 +657,9 @@ void msImageProcessor::Segment(int sigmaS, float sigmaR, int minRegion, SpeedUpL
 	delete [] visitTable;
 	visitTable	= NULL;
 
-	//Check to see if the algorithm is to be halted, if so then
-	//destroy output and regions adjacency matrix and exit
-	if((ErrorStatus = msSys.Progress((float)(0.95))) == EL_HALT)
-	{
-		DestroyRAM();
-		DestroyOutput();
-		return;
-	}
-
-#ifdef PROMPT
-	double timer	= msSys.ElapsedTime();
-	msSys.Prompt("done. (%6.2f seconds, numRegions = %6d).\nPruning spurious regions\t... ", timer, regionCount);
-	msSys.StartTimer();
-#endif
-
 	//Prune spurious regions (regions whose area is under
 	//minRegion) using RAM
 	Prune(minRegion);
-
-#ifdef PROMPT
-	timer	= msSys.ElapsedTime();
-	msSys.Prompt("done. (%6.2f seconds, numRegions = %6d)\nPruning spurious regions    ...", timer, regionCount);
-	msSys.StartTimer();
-#endif
-
-	//Check to see if the algorithm is to be halted, if so then
-	//destroy output and regions adjacency matrix and exit
-	if((ErrorStatus = msSys.Progress(1.0)) == EL_HALT)
-	{
-		DestroyRAM();
-		DestroyOutput();
-		return;
-	}
 
 	//de-allocate memory for region adjacency matrix
 	DestroyRAM();
@@ -1231,13 +1094,6 @@ void msImageProcessor::NonOptimizedFilter(float sigmaS, float sigmaR)
 	double	*Mh		= new double [lN];
 	
 	// proceed ...
-#ifdef PROMPT
-	msSys.Prompt("done.\nApplying mean shift (Using Lattice)... ");
-#ifdef SHOW_PROGRESS
-	msSys.Prompt("\n 0%%");
-#endif
-#endif
-
 	for(i = 0; i < L; i++)
 	{
 
@@ -1292,25 +1148,7 @@ void msImageProcessor::NonOptimizedFilter(float sigmaS, float sigmaR)
 		//store result into msRawData...
 		for(j = 0; j < N; j++)
 			msRawData[N*i+j] = (float)(yk[j+2]);
-
-		// Prompt user on progress
-#ifdef SHOW_PROGRESS
-		percent_complete = (float)(i/(float)(L))*100;
-		msSys.Prompt("\r%2d%%", (int)(percent_complete + 0.5));
-#endif
-	
-		// Check to see if the algorithm has been halted
-		if((i%PROGRESS_RATE == 0)&&((ErrorStatus = msSys.Progress((float)(i/(float)(L))*(float)(0.8)))) == EL_HALT)
-			break;
 	}
-	
-	// Prompt user that filtering is completed
-#ifdef PROMPT
-#ifdef SHOW_PROGRESS
-	msSys.Prompt("\r");
-#endif
-	msSys.Prompt("done.");
-#endif
 	
 	// de-allocate memory
 	delete [] yk;
@@ -1389,14 +1227,6 @@ void msImageProcessor::OptimizedFilter1(float sigmaS, float sigmaR)
 	modeCandidatePoint	= new float	[N];
 	
 	// proceed ...
-#ifdef PROMPT
-	msSys.Prompt("done.\nApplying mean shift (Using Lattice) ... ");
-#ifdef SHOW_PROGRESS
-	msSys.Prompt("\n 0%%");
-#endif
-#endif
-
-
 	for(i = 0; i < L; i++)
 	{
 		// if a mode was already assigned to this data point
@@ -1576,25 +1406,7 @@ void msImageProcessor::OptimizedFilter1(float sigmaS, float sigmaR)
 		//store result into msRawData...
 		for(j = 0; j < N; j++)
 			msRawData[N*i+j] = (float)(yk[j+2]);
-
-		// Prompt user on progress
-#ifdef SHOW_PROGRESS
-		percent_complete = (float)(i/(float)(L))*100;
-		msSys.Prompt("\r%2d%%", (int)(percent_complete + 0.5));
-#endif
-	
-		// Check to see if the algorithm has been halted
-		if((i%PROGRESS_RATE == 0)&&((ErrorStatus = msSys.Progress((float)(i/(float)(L))*(float)(0.8)))) == EL_HALT)
-			break;		
 	}
-	
-	// Prompt user that filtering is completed
-#ifdef PROMPT
-#ifdef SHOW_PROGRESS
-	msSys.Prompt("\r");
-#endif
-	msSys.Prompt("done.");
-#endif
 	
 	// de-allocate memory
 	delete [] modeCandidatePoint;
@@ -1685,13 +1497,6 @@ void msImageProcessor::OptimizedFilter2(float sigmaS, float sigmaR)
 	modeCandidatePoint	= new float	[N];
 	
 	// proceed ...
-#ifdef PROMPT
-	msSys.Prompt("done.\nApplying mean shift (Using Lattice)... ");
-#ifdef SHOW_PROGRESS
-	msSys.Prompt("\n 0%%");
-#endif
-#endif
-
 	for(i = 0; i < L; i++)
 	{
 		// if a mode was already assigned to this data point
@@ -1872,26 +1677,7 @@ void msImageProcessor::OptimizedFilter2(float sigmaS, float sigmaR)
 		//store result into msRawData...
 		for(j = 0; j < N; j++)
 			msRawData[N*i+j] = (float)(yk[j+2]);
-
-		// Prompt user on progress
-#ifdef SHOW_PROGRESS
-		percent_complete = (float)(i/(float)(L))*100;
-		msSys.Prompt("\r%2d%%", (int)(percent_complete + 0.5));
-#endif
-	
-		// Check to see if the algorithm has been halted
-		if((i%PROGRESS_RATE == 0)&&((ErrorStatus = msSys.Progress((float)(i/(float)(L))*(float)(0.8)))) == EL_HALT)
-			break;
-		
 	}
-	
-	// Prompt user that filtering is completed
-#ifdef PROMPT
-#ifdef SHOW_PROGRESS
-	msSys.Prompt("\r");
-#endif
-	msSys.Prompt("done.");
-#endif
 	
 	// de-allocate memory
 	delete [] modeCandidatePoint;
@@ -3465,14 +3251,6 @@ void msImageProcessor::NewOptimizedFilter1(float sigmaS, float sigmaR)
 	memset(modeTable, 0, width*height);
 	
 	// proceed ...
-#ifdef PROMPT
-	msSys.Prompt("done.\nApplying mean shift (Using Lattice) ... ");
-#ifdef SHOW_PROGRESS
-	msSys.Prompt("\n 0%%");
-#endif
-#endif
-
-
 	for(i = 0; i < L; i++)
 	{
 		// if a mode was already assigned to this data point
@@ -3778,25 +3556,8 @@ void msImageProcessor::NewOptimizedFilter1(float sigmaS, float sigmaR)
 		//store result into msRawData...
 		for(j = 0; j < N; j++)
 			msRawData[N*i+j] = (float)(yk[j+2]);
-
-		// Prompt user on progress
-#ifdef SHOW_PROGRESS
-		percent_complete = (float)(i/(float)(L))*100;
-		msSys.Prompt("\r%2d%%", (int)(percent_complete + 0.5));
-#endif
-	
-		// Check to see if the algorithm has been halted
-		if((i%PROGRESS_RATE == 0)&&((ErrorStatus = msSys.Progress((float)(i/(float)(L))*(float)(0.8)))) == EL_HALT)
-			break;		
 	}
 	
-	// Prompt user that filtering is completed
-#ifdef PROMPT
-#ifdef SHOW_PROGRESS
-	msSys.Prompt("\r");
-#endif
-	msSys.Prompt("done.");
-#endif
 	// de-allocate memory
    delete [] buckets;
    delete [] slist;
@@ -3947,14 +3708,6 @@ void msImageProcessor::NewOptimizedFilter2(float sigmaS, float sigmaR)
 	memset(modeTable, 0, width*height);
 	
 	// proceed ...
-#ifdef PROMPT
-	msSys.Prompt("done.\nApplying mean shift (Using Lattice) ... ");
-#ifdef SHOW_PROGRESS
-	msSys.Prompt("\n 0%%");
-#endif
-#endif
-
-
 	for(i = 0; i < L; i++)
 	{
 		// if a mode was already assigned to this data point
@@ -4281,25 +4034,8 @@ void msImageProcessor::NewOptimizedFilter2(float sigmaS, float sigmaR)
 		//store result into msRawData...
 		for(j = 0; j < N; j++)
 			msRawData[N*i+j] = (float)(yk[j+2]);
-
-		// Prompt user on progress
-#ifdef SHOW_PROGRESS
-		percent_complete = (float)(i/(float)(L))*100;
-		msSys.Prompt("\r%2d%%", (int)(percent_complete + 0.5));
-#endif
-	
-		// Check to see if the algorithm has been halted
-		if((i%PROGRESS_RATE == 0)&&((ErrorStatus = msSys.Progress((float)(i/(float)(L))*(float)(0.8)))) == EL_HALT)
-			break;		
 	}
 	
-	// Prompt user that filtering is completed
-#ifdef PROMPT
-#ifdef SHOW_PROGRESS
-	msSys.Prompt("\r");
-#endif
-	msSys.Prompt("done.");
-#endif
 	// de-allocate memory
    delete [] buckets;
    delete [] slist;
@@ -4446,13 +4182,6 @@ void msImageProcessor::NewNonOptimizedFilter(float sigmaS, float sigmaR)
    // done indexing/hashing
 	
 	// proceed ...
-#ifdef PROMPT
-	msSys.Prompt("done.\nApplying mean shift (Using Lattice)... ");
-#ifdef SHOW_PROGRESS
-	msSys.Prompt("\n 0%%");
-#endif
-#endif
-
 	for(i = 0; i < L; i++)
 	{
 
@@ -4634,25 +4363,7 @@ void msImageProcessor::NewNonOptimizedFilter(float sigmaS, float sigmaR)
 		//store result into msRawData...
 		for(j = 0; j < N; j++)
 			msRawData[N*i+j] = (float)(yk[j+2]*sigmaR);
-
-		// Prompt user on progress
-#ifdef SHOW_PROGRESS
-		percent_complete = (float)(i/(float)(L))*100;
-		msSys.Prompt("\r%2d%%", (int)(percent_complete + 0.5));
-#endif
-	
-		// Check to see if the algorithm has been halted
-		if((i%PROGRESS_RATE == 0)&&((ErrorStatus = msSys.Progress((float)(i/(float)(L))*(float)(0.8)))) == EL_HALT)
-			break;
 	}
-	
-	// Prompt user that filtering is completed
-#ifdef PROMPT
-#ifdef SHOW_PROGRESS
-	msSys.Prompt("\r");
-#endif
-	msSys.Prompt("done.");
-#endif
 	
 	// de-allocate memory
    delete [] buckets;

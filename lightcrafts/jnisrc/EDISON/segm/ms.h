@@ -50,19 +50,8 @@ Implemented by Chris M. Christoudias, Bogdan Georgescu
 //Include type definitions
 #include "tdef.h"
 
-//include mean shift system used
-//for function timing and system output
-#include "msSys.h"
-
 //Include Debugging Constant
 //#define   DEBUG
-
-//Define Prompt - Prompts user on progress of Mean Shift algorithm
-#define  PROMPT
-
-//Define Show Progress - Prompts user on percent complete of a given
-//                       mean shift algorithm
-//#define SHOW_PROGRESS
 
 //Define Progress Rate - Indicates the number of convergences before
 //                       checking progress
@@ -712,12 +701,6 @@ class MeanShift {
   //===============================
   // *** Protected Data Members ***
   //===============================
-
-   //##########################################
-   //#########   MEAN SHIFT SYSTEM   ##########
-   //##########################################
-
-   msSystem    msSys;                     // used for function timing and system output
 
    //##########################################
    //######### INPUT DATA PARAMETERS ##########
