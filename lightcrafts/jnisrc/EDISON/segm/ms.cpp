@@ -955,7 +955,7 @@ void MeanShift::LatticeMSVector(double *Mh_ptr, double *yk_ptr)
 {
 	
 	// Initialize mean shift vector
-	register int i;
+	int i;
 	for(i = 0; i < N+2; i++)
 		Mh_ptr[i] = 0;
 	
@@ -1019,7 +1019,7 @@ void MeanShift::OptLatticeMSVector(double *Mh_ptr, double *yk_ptr)
 {
 	
 	// Initialize mean shift vector
-	register int i;
+	int i;
 	for(i = 0; i < N+2; i++)
 		Mh_ptr[i] = 0;
 	
@@ -1927,7 +1927,7 @@ void MeanShift::uniformLSearch(double *Mh_ptr, double *yk_ptr)
 {
 	
 	//Declare variables
-	register int	i, j, k;
+	int	i, j, k;
 	int				s, p, dataPoint, lN;
 	double			diff, el, dx, dy, tx, weight;
 	
@@ -2044,7 +2044,7 @@ void MeanShift::optUniformLSearch(double *Mh_ptr, double *yk_ptr)
 {
 	
 	//Declare variables
-	register int	i, j, k;
+	int	i, j, k;
 	int				s, p, dataPoint, pointIndx, lN;
 	double			diff, el, dx, dy, tx, weight;
 	
@@ -2167,7 +2167,7 @@ void MeanShift::generalLSearch(double *Mh_ptr, double *yk_ptr)
 {
 	
 	//Declare variables
-	register int i, j, k;
+	int i, j, k;
 	int			 s, p, dataPoint, lN, x0, x1;
 	double		 diff, el, dx, dy, tw, u, y0, y1, tx;
 	
@@ -2323,7 +2323,7 @@ void MeanShift::optGeneralLSearch(double *Mh_ptr, double *yk_ptr)
 {
 	
 	//Declare variables
-	register int	i, j, k;
+	int	i, j, k;
 	int				s, p, dataPoint, pointIndx, lN, x0, x1;
 	double			diff, el, dx, dy, tw, u, y0, y1, tx;
 	

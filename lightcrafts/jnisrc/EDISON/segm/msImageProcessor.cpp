@@ -2852,7 +2852,7 @@ void msImageProcessor::DefineBoundaries( void )
 	}
 
 	//last row (every pixel is a boundary pixel) (i = height-1)
-	register int	start	= (height-1)*width, stop = height*width;
+	int	start	= (height-1)*width, stop = height*width;
 	for(i = start; i < stop; i++)
 	{
 		boundaryMap[i]		= label	= labels[i];
