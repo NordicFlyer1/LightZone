@@ -117,8 +117,8 @@ class MeanShift {
   /* Class Constructor and Destructor */
   /*\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/*/
 
-  MeanShift( void ); //Default Constructor
- ~MeanShift( void ); //Class Destructor
+  MeanShift() = default;
+ ~MeanShift(); //Class Destructor
 
   /*/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\*/
   /* Creation/Initialization of Mean Shift Kernel */
@@ -615,7 +615,7 @@ class MeanShift {
   //<--------------------------------------------------->|//
   //--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//
 
-  char         *ErrorMessage;
+  char         *ErrorMessage {new char[256]};
 
   //--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//
   //<--------------------------------------------------->|//
@@ -635,7 +635,7 @@ class MeanShift {
   //<--------------------------------------------------->|//
   //--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//
 
-  ErrorLevel   ErrorStatus;
+  ErrorLevel   ErrorStatus {EL_OKAY};
 
  protected:
 
@@ -706,15 +706,17 @@ class MeanShift {
    //######### INPUT DATA PARAMETERS ##########
    //##########################################
 
-   int         L, N, kp, *P;              // length, dimension, subspace number, and subspace dimensions
-
+   int L {0}; // length
+   int N {0}; // dimension
+   int kp {0}; // subspace number
+   int *P {nullptr}; // subspace dimensions
 
    //##########################################
    //######### INPUT DATA STORAGE    ##########
    //##########################################
 
    ////////Linear Storage (used by lattice and bst)////////
-   float       *data;                     // memory allocated for data points stored by tree nodes
+   float *data {nullptr};                 // memory allocated for data points stored by tree nodes
                                           // when used by the lattice data structure data does not store
                                           // the lattice information; format of data:
                                           // data = <x11, x12, ..., x1N,...,xL1, xL2, ..., xLN>
@@ -725,15 +727,16 @@ class MeanShift {
    //##########################################
 
    ////////Lattice Data Structure////////
-   int         height, width;             // Height and width of lattice
+   int height {0};
+   int width {0};
 
    //##########################################
    //######### KERNEL DATA STRUCTURE ##########
    //##########################################
 
-   float       *h;                        // bandwidth vector
+   float       *h {nullptr};              // bandwidth vector
 
-   float       *offset;                   // defines bandwidth offset caused by the use of a Gaussian kernel
+   float       *offset {nullptr};         // defines bandwidth offset caused by the use of a Gaussian kernel
                                           // (for example)
 
    //##########################################
@@ -760,18 +763,19 @@ class MeanShift {
    //#########  SHIFT ON A LATTICE   ##########
    //##########################################
 
-   float       *weightMap;                // weight map that may be used to weight the kernel
+   float       *weightMap {nullptr};      // weight map that may be used to weight the kernel
                                           // upon performing mean shift on a lattice
 
-   bool        weightMapDefined;          // used to indicate if a lattice weight map has been
+   bool        weightMapDefined {false};  // used to indicate if a lattice weight map has been
                                           // defined
 
    //##########################################
    //#######        CLASS STATE        ########
    //##########################################
 
-   ClassStateStruct  class_state;         //specifies the state of the class(i.e if data has been loaded into 
-                                          //the class, if a kernel has been defined, etc.)
+   // specifies the state of the class (i.e if data has been loaded into
+   // the class, if a kernel has been defined, etc.)
+   ClassStateStruct  class_state {false, false, false, false};
 
  private:
 
@@ -860,15 +864,17 @@ class MeanShift {
    //######### KERNEL DATA STRUCTURE ##########
    //##########################################
 
-   kernelType        *kernel;             // kernel types for each subspace S[i]
+   kernelType        *kernel {nullptr};     // kernel types for each subspace S[i]
 
-   double            **w;                 // weight function lookup table
+   double            **w {nullptr};         // weight function lookup table
 
-   double            *increment;          // increment used by weight hashing function
+   double            *increment {nullptr};  // increment used by weight hashing function
 
-   bool              uniformKernel;       // flag used to indicate if the kernel is uniform or not
+   bool              uniformKernel {false}; // flag used to indicate if the kernel is uniform or not
 
-   userWeightFunct   *head, *cur;         // user defined weight function linked list
+   // user defined weight function linked list
+   userWeightFunct   *head {nullptr};
+   userWeightFunct   *cur {nullptr};
 
 
    //##########################################
@@ -876,11 +882,11 @@ class MeanShift {
    //##########################################
 
    ////////Range Searching on General Input Data Set////////
-   tree        *root;                     // root of kdBST used to store input
+   tree        *root {nullptr};           // root of kdBST used to store input
 
-   tree        *forest;                   // memory allocated for tree nodes
+   tree        *forest {nullptr};         // memory allocated for tree nodes
 
-   float       *range;                    // range vector used to perform range search on kd tree, indexed
+   float       *range {nullptr};          // range vector used to perform range search on kd tree, indexed
                                           // by dimension of input - format:
                                           // range = {Lower_Limit_1, Upper_Limit_1, ..., Lower_Limit_N, Upper_Limit_N}
 
@@ -889,7 +895,7 @@ class MeanShift {
    //######### DATA STRUCTURES       ##########
    //##########################################
 
-   double      *uv;                    // stores normalized distance vector between
+   double      *uv {nullptr};          // stores normalized distance vector between
                                        // yk and xi
 
    double      wsum;                   // sum of weights calculated at data points within the sphere

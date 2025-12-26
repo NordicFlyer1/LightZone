@@ -62,69 +62,6 @@ Implemented by Chris M. Christoudias, Bogdan Georgescu
   /*\/\/\/\/\/\/\/\/\/\/\/\/\/\/*/
 
 /*******************************************************/
-/*Class Constructor                                    */
-/*******************************************************/
-/*Post:                                                */
-/*      The MeanShift class has been properly          */
-/*      initialized.                                   */
-/*******************************************************/
-
-MeanShift::MeanShift( void )
-{
-	
-	//initialize input data set parameters...
-	P							= NULL;
-	L							= 0;
-	N							= 0;
-	kp							= 0;
-	
-	//initialize input data set storage structures...
-	data						= NULL;
-	
-	//initialize input data set kd-tree
-	root						= NULL;
-	forest						= NULL;
-	range						= NULL;
-	
-	//initialize lattice structure...
-	height						= 0;
-	width						= 0;
-	
-	//initialize kernel structure...
-	h							= NULL;
-	kernel						= NULL;
-	w							= NULL;
-	offset						= NULL;
-	increment					= NULL;
-	uniformKernel				= false;
-	
-	//initialize weight function linked list...
-	head						= cur	= NULL;
-	
-	//initialize mean shift processing data structures...
-	uv							= NULL;
-
-	//set lattice weight map to null
-	weightMap					= NULL;
-
-	//indicate that the lattice weight map is undefined
-	weightMapDefined			= false;
-	
-	//allocate memory for error message buffer...
-	ErrorMessage				= new char [256];
-	
-	//initialize error status to OKAY
-	ErrorStatus					= EL_OKAY;
-	
-	//Initialize class state...
-	class_state.INPUT_DEFINED	= false;
-	class_state.KERNEL_DEFINED	= false;
-	class_state.LATTICE_DEFINED	= false;
-	class_state.OUTPUT_DEFINED	= false;
-	
-}
-
-/*******************************************************/
 /*Class Destructor                                     */
 /*******************************************************/
 /*Post:                                                */
@@ -132,7 +69,7 @@ MeanShift::MeanShift( void )
 /*      destroyed.                                     */
 /*******************************************************/
 
-MeanShift::~MeanShift( void )
+MeanShift::~MeanShift()
 {
 	delete [] ErrorMessage;
    if (weightMap)

@@ -66,7 +66,6 @@ Implemented by Chris M. Christoudias, Bogdan Georgescu
 
 RegionList::RegionList(int maxRegions_, int L_, int N_)
 {
-
     //Obtain maximum number of regions that can be
     //defined by user
     if((maxRegions = maxRegions_) <= 0)
@@ -88,16 +87,6 @@ RegionList::RegionList(int maxRegions_, int L_, int N_)
     //Allocate memory for region list array
     if(!(regionList = new REGION [maxRegions]))
         ErrorHandler("RegionList", "Not enough memory.", FATAL);
-
-    //Initialize region list...
-    numRegions      = freeRegion = 0;
-
-    //Initialize indexTable
-    freeBlockLoc    = 0;
-
-    //done.
-    return;
-
 }
 
 /*******************************************************/
