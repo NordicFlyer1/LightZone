@@ -8,8 +8,8 @@
  */
 
 #include <jni.h>
-#include <stdarg.h>
-#include <stdlib.h>
+#include <cstdarg>
+#include <cstdlib>
 
 #include "segm/msImageProcessor.h"
 

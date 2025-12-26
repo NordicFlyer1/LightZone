@@ -37,11 +37,11 @@ Implemented by Chris M. Christoudias, Bogdan Georgescu
 #include	"msImageProcessor.h"
 
 //include needed libraries
-#include	<math.h>
-#include	<stdio.h>
-#include	<assert.h>
-#include	<string.h>
-#include	<stdlib.h>
+#include	<cmath>
+#include	<cstdio>
+#include	<cassert>
+#include	<cstring>
+#include	<cstdlib>
 
 /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
 /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/

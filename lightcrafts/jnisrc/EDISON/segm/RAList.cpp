@@ -35,9 +35,9 @@ Implemented by Chris M. Christoudias, Bogdan Georgescu
 #include    "RAList.h"
 
 //include needed libraries
-#include    <stdio.h>
-#include    <assert.h>
-#include    <stdlib.h>
+#include    <cstdio>
+#include    <cassert>
+#include    <cstdlib>
 
 /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
 /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/

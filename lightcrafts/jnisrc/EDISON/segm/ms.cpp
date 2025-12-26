@@ -46,10 +46,10 @@ Implemented by Chris M. Christoudias, Bogdan Georgescu
 //Include Needed Libraries
 
 #include	"ms.h"
-#include	<string.h>
-#include	<stdlib.h>
-#include	<stdio.h>
-#include	<math.h>
+#include	<cstring>
+#include	<cstdlib>
+#include	<cstdio>
+#include	<cmath>
 
 /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
 /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
