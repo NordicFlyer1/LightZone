@@ -53,7 +53,6 @@ Implemented by Chris M. Christoudias, Bogdan Georgescu
 //define constants
 
 	//image pruning
-#define	TOTAL_ITERATIONS	14
 #define BIG_NUM				0xffffffff	//BIG_NUM = 2^32-1
 #define NODE_MULTIPLE		10
 
@@ -254,22 +253,16 @@ public:
   //|   <* sigmaR *>                                     |//
   //|   The range radius of the mean shift window.       |//
   //|                                                    |//
-  //|   <* speedUpLevel *>                               |//
-  //|   Determines if a speed up optimization should be  |//
-  //|   used to perform image filtering. A value of      |//
-  //|   NO_SPEEDUP turns this optimization off and a     |//
-  //|   value of SPEEDUP turns this optimization on.     |//
-  //|                                                    |//
   //<--------------------------------------------------->|//
   //|                                                    |//
   //| Usage:                                             |//
   //| ======                                             |//
-  //|    Filter(sigmaS, sigmaR, speedUpLevel)            |//
+  //|    Filter(sigmaS, sigmaR)            |//
   //|                                                    |//
   //<--------------------------------------------------->|//
   //--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//
 
-  void Filter(int, float, SpeedUpLevel);
+  void Filter(int, float);
 
  /*/\/\/\/\/\/\/\/\/\/\/\*/
  /* Image Region Fusing  */
@@ -355,23 +348,16 @@ public:
   //|   point density < minRegion are pruned from the    |//
   //|   image.                                           |//
   //|                                                    |//
-  //|   <* speedUpLevel *>                               |//
-  //|   Determines if a speed up optimization should be  |//
-  //|   used to perform image filtering. A value of      |//
-  //|   NO_SPEEDUP turns this optimization off and a     |//
-  //|   value of SPEEDUP turns this optimization on.     |//
-  //|                                                    |//
   //<--------------------------------------------------->|//
   //|                                                    |//
   //| Usage:                                             |//
   //| ======                                             |//
-  //|    Segment(sigmaS, sigmaR, minRegion,              |//
-  //|                       speedUpLevel)                |//
+  //|    Segment(sigmaS, sigmaR, minRegion)              |//
   //|                                                    |//
   //<--------------------------------------------------->|//
   //--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//
- 
-  void Segment(int, float, int, SpeedUpLevel);
+
+  void Segment(int, float, int);
 
   /*/\/\/\/\/\/\/\/\/\/\/\/\*/
   /* Data Space Conversion  */

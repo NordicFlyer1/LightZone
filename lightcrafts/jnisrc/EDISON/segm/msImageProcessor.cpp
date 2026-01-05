@@ -187,12 +187,11 @@ void msImageProcessor::DefineImage(byte *data_, imageType type, int height_, int
 	if(!h)
 	{
 		//define default kernel parameters...
-		kernelType	k[2]		= {Uniform, Uniform};
 		int			P[2]		= {2, N};
 		float		tempH[2]	= {1.0 , 1.0};
 
 		//define default kernel in mean shift base class
-		DefineKernel(k, tempH, P, 2);
+		DefineKernel(tempH, P, 2);
 	}
 
 	//de-allocate memory
@@ -239,12 +238,11 @@ void msImageProcessor::DefineBgImage(byte* data_, imageType type, int height_, i
 	if(!h)
 	{
 		//define default kernel parameters...
-		kernelType	k[2]		= {Uniform, Uniform};
 		int			P[2]		= {2, N};
 		float		tempH[2]	= {1.0 , 1.0};
 
 		//define default kernel in mean shift base class
-		DefineKernel(k, tempH, P, 2);
+		DefineKernel(tempH, P, 2);
 	}
 
 	//de-allocate memory
@@ -333,11 +331,6 @@ void msImageProcessor::RemoveWeightMap( void )
 /*        shift filtering to the defined input image   */
 /*        has spatial bandwidth sigmaS and range band- */
 /*        width sigmaR                                 */
-/*      - speedUpLevel determines whether or not the   */
-/*        filtering should be optimized for faster     */
-/*        execution: a value of NO_SPEEDUP turns this  */
-/*        optimization off and a value SPEEDUP turns   */
-/*        this optimization on                         */
 /*      - a data set has been defined                  */
 /*      - the height and width of the lattice has been */
 /*        specified using method DefineLattice()       */
@@ -348,7 +341,7 @@ void msImageProcessor::RemoveWeightMap( void )
 /*        data members of the msImageProcessor class.  */
 /*******************************************************/
 
-void msImageProcessor::Filter(int sigmaS, float sigmaR, SpeedUpLevel speedUpLevel)
+void msImageProcessor::Filter(int sigmaS, float sigmaR)
 {
 
 	//Check Class consistency...
@@ -376,8 +369,6 @@ void msImageProcessor::Filter(int sigmaS, float sigmaR, SpeedUpLevel speedUpLeve
 			return;
 	}
 
-	//****************** Allocate Memory ******************
-
 	//Allocate memory for basin of attraction mode structure...
 	if((!(modeTable = new unsigned char [L]))||(!(pointList = new int [L])))
 	{
@@ -385,30 +376,8 @@ void msImageProcessor::Filter(int sigmaS, float sigmaR, SpeedUpLevel speedUpLeve
 		return;
 	}
 
-	//*****************************************************
-
-	//filter image according to speedup level...
-	switch(speedUpLevel)
-	{
-	//no speedup...
-	case NO_SPEEDUP:	
-      //NonOptimizedFilter((float)(sigmaS), sigmaR);	break;
-      NewNonOptimizedFilter((float)(sigmaS), sigmaR);	
-	  break;
-	//medium speedup
-	case MED_SPEEDUP:	
-      //OptimizedFilter1((float)(sigmaS), sigmaR);		break;
-      NewOptimizedFilter1((float)(sigmaS), sigmaR);		
-	  break;
-	//high speedup
-	case HIGH_SPEEDUP: 
-      //OptimizedFilter2((float)(sigmaS), sigmaR);		break;
-      NewOptimizedFilter2((float)(sigmaS), sigmaR);		
-	  break;
-   // new speedup
-	}
-
-	//****************** Deallocate Memory ******************
+	//filter image using high speedup optimization
+	NewOptimizedFilter2((float)(sigmaS), sigmaR);
 
 	//de-allocate memory used by basin of attraction mode structure
 	delete [] modeTable;
@@ -418,8 +387,6 @@ void msImageProcessor::Filter(int sigmaS, float sigmaR, SpeedUpLevel speedUpLeve
 	modeTable	= NULL;
 	pointList	= NULL;
 	pointCount	= 0;
-
-	//*******************************************************
 
 	//Label image regions, also if segmentation is not to be
 	//performed use the resulting classification structure to
@@ -600,11 +567,6 @@ void msImageProcessor::FuseRegions(float sigmaS, int minRegion)
 /*      - minRegion is the minimum point density that  */
 /*        a region may have in the resulting segment-  */
 /*        ed image                                     */
-/*      - speedUpLevel determines whether or not the   */
-/*        filtering should be optimized for faster     */
-/*        execution: a value of NO_SPEEDUP turns this  */
-/*        optimization off and a value SPEEDUP turns   */
-/*        this optimization on                         */
 /*Post:                                                */
 /*      - the defined image is segmented and the       */
 /*        resulting segmented image is stored in the   */
@@ -615,7 +577,7 @@ void msImageProcessor::FuseRegions(float sigmaS, int minRegion)
 /*        from the segmented image.                    */
 /*******************************************************/
 
-void msImageProcessor::Segment(int sigmaS, float sigmaR, int minRegion, SpeedUpLevel speedUpLevel)
+void msImageProcessor::Segment(int sigmaS, float sigmaR, int minRegion)
 {
 
 	//make sure kernel is properly defined...
@@ -626,7 +588,7 @@ void msImageProcessor::Segment(int sigmaS, float sigmaR, int minRegion, SpeedUpL
 	}
 
 	//Apply mean shift to data set using sigmaS and sigmaR...
-	Filter(sigmaS, sigmaR, speedUpLevel);
+	Filter(sigmaS, sigmaR);
 
 	//check for errors
 	if(ErrorStatus == EL_ERROR)

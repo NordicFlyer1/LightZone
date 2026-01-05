@@ -70,17 +70,6 @@ struct tree {
   tree  *parent;
 };
 
- // User Defined Weight Function
-struct userWeightFunct {
-   
-  double          *w;
-  double          halfWindow;
-  int             sampleNumber;
-  int             subspace;
-  userWeightFunct *next;
-
-};
-
 // Define class state structure
 struct ClassStateStruct {
    bool  KERNEL_DEFINED;
@@ -93,17 +82,9 @@ struct ClassStateStruct {
 
  // Threshold
 const double   EPSILON        = 0.01;  // define threshold (approx. Value of Mh at a peak or plateau)
-const double   MU             = 0.05;  // define threshold required that window is near convergence
 const double   TC_DIST_FACTOR	= 0.5;   // cluster search windows near convergence that are a distance
                                        // h[i]*TC_DIST_FACTOR of one another (transitive closure)
-const double   SQ_TC_DFACTOR  = 0.0625; // (TC_DIST_FACTOR)^2
 const int      LIMIT          = 100;   // define max. # of iterations to find mode
-
- // Gaussian Lookup Table
-const int      GAUSS_NUM_ELS   = 16;   // take 16 samples of exp(-u/2)
-const double   GAUSS_LIMIT     = 2.9;  // GAUSS_LIMIT     = c
-const double   GAUSS_INCREMENT = GAUSS_LIMIT*GAUSS_LIMIT/GAUSS_NUM_ELS;
-                                       // GAUSS_INCREMENT = (c^2)/(# of samples)
 
  // Numerical Analysis
 const double   DELTA           = 0.00001; // used for floating point to integer conversion
@@ -144,13 +125,6 @@ class MeanShift {
   //|   In order to create a valid kernel the following  |//
   //|   arguments must be provided for this method:      |//
   //|                                                    |//
-  //|   <* kernel *>                                     |//
-  //|   A one dimensional array of type kernelType used  |//
-  //|   to specify the kernel type (Uniform, Gaussian,   |//
-  //|   or User Defined) of a given subspace of the input|//
-  //|   set. Entry i of kernel correlates to the i-th    |//
-  //|   subspace of the input data set.                  |//
-  //|                                                    |//
   //|   <* h *>                                          |//
   //|   A one dimensional array of floating point numb-  |//
   //|   ers that are used to normalize the input data    |//
@@ -166,103 +140,12 @@ class MeanShift {
   //|                                                    |//
   //| Usage:                                             |//
   //| ======                                             |//
-  //|    DefineKernel(kernel, h, P, kp)                  |//
+  //|    DefineKernel(h, P, kp)                  |//
   //|                                                    |//
   //<--------------------------------------------------->|//
   //--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//
 
-  void  DefineKernel(kernelType*, float*, int*, int);
-
-  //--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//
-  //<--------------------------------------------------->|//
-  //|                                                    |//
-  //| Method Name:                                       |//
-  //| ============                                       |//
-  //|               * Add Weight Function *              |//
-  //|                                                    |//
-  //<--------------------------------------------------->|//
-  //|                                                    |//
-  //| Description:                                       |//
-  //| ============                                       |//
-  //|                                                    |//
-  //|   Each subspace specified as User Defined is un-   |//
-  //|   quely defined by a correlating weight function   |//
-  //|   which is user defined.                           |//
-  //|                                                    |//
-  //|   A weight function w(u) exhibits the following    |//
-  //|   properties:                                      |//
-  //|                                                    |//
-  //|   (1) w(u) = w(-u)                                 |//
-  //|   (2) u = ((x_i-y_k)^2)/(h^2) (see docs)           |//
-  //|   (3) w(u) = 0, for |u| >= halfWindow              |//
-  //|                                                    |//
-  //|   To add a weight function to the mean shift class |//
-  //|   the following must be specified:                 |//
-  //|                                                    |//
-  //|   <* g() *>                                        |//
-  //|   A pointer the weight function w(u) exhibiting    |//
-  //|   the above properties.                            |//
-  //|                                                    |//
-  //|   <* halfWindow *>                                 |//
-  //|   A floating point number specifying where w(u)    |//
-  //|   exists (is non zero). [See Property 3 Above]     |//
-  //|                                                    |//
-  //|   <* sampleNumber *>                               |//
-  //|   An integer used to specify the number of samples |//
-  //|   used to describe w(u). Linear interpolation is   |//
-  //|   used during the mean shift calculation using the |//
-  //|   the samples of w(u) to determine the value of w  |//
-  //|   at a location |u| < halfWindow.                  |//
-  //|                                                    |//
-  //|   <* subspace *>                                   |//
-  //|   An integer specifying which kernel w(u) defines. |//
-  //|                                                    |//
-  //|   Weight functions are accounted for every time    |//
-  //|   a new kernel is created.                         |//
-  //|                                                    |//
-  //|   If a weight function is added to non-existing    |//
-  //|   subspace of the input data set  (example: the    |//
-  //|   input data set contains 3 subspaces and this     |//
-  //|   method is given subspace = 4) then the weight    |//
-  //|   definition will simply be ignored by the mean    |//
-  //|   shift class.                                     |//
-  //|                                                    |//
-  //|   If a subspace is declared as kernel type User    |//
-  //|   Defined and a weight function is not defined     |//
-  //|   for that subspace a fatal error will occur.      |//
-  //|                                                    |//
-  //<--------------------------------------------------->|//
-  //|                                                    |//
-  //| Usage:                                             |//
-  //| ======                                             |//
-  //|   AddWeightFunction(g(u)        , halfWindow,      |//
-  //|                     sampleNumber, subspace);       |//
-  //|                                                    |//
-  //<--------------------------------------------------->|//
-  //--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//
-
-  void AddWeightFunction(double g(double), float, int, int);
-
-  //--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//
-  //<--------------------------------------------------->|//
-  //|                                                    |//
-  //| Method Name:                                       |//
-  //| ============                                       |//
-  //|           *  Clear Weight Functions  *             |//
-  //|                                                    |//
-  //<--------------------------------------------------->|//
-  //|                                                    |//
-  //| Description:                                       |//
-  //| ============                                       |//
-  //|                                                    |//
-  //|   Removes all user defined weight functions added  |//
-  //|   using method AddWeightFunction() from the        |//
-  //|   private data members of the mean shift class.    |//
-  //|                                                    |//
-  //<--------------------------------------------------->|//
-  //--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//
-
-  void ClearWeightFunctions( void );
+  void  DefineKernel(float*, int*, int);
 
   /*/\/\/\/\/\/\/\/\/\/\/\/\/\/\*/
   /* Input Data Set Declaration */
@@ -846,16 +729,6 @@ class MeanShift {
                                                         // using a uniform kernel and the basin of attraction
                                                         // optimization for better performance
 
-   void generalLSearch	 (double *, double *);          // given a center location and mean shift vector, a lattice
-                                                        // search is performed to compute the mean shift vector
-                                                        // using a general kernel
-
-   void optGeneralLSearch(double *, double *);          // given a center location and mean shift vector, a lattice
-                                                        // search is performed to compute the mean shift vector
-                                                        // using a general kernel and the basin of attraction
-                                                        // optimization for better performance
-
-
   //=============================
   // *** Private Data Members ***
   //=============================
@@ -864,17 +737,9 @@ class MeanShift {
    //######### KERNEL DATA STRUCTURE ##########
    //##########################################
 
-   kernelType        *kernel {nullptr};     // kernel types for each subspace S[i]
-
    double            **w {nullptr};         // weight function lookup table
 
    double            *increment {nullptr};  // increment used by weight hashing function
-
-   bool              uniformKernel {false}; // flag used to indicate if the kernel is uniform or not
-
-   // user defined weight function linked list
-   userWeightFunct   *head {nullptr};
-   userWeightFunct   *cur {nullptr};
 
 
    //##########################################
