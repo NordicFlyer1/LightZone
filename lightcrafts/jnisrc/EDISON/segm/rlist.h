@@ -304,9 +304,9 @@ private:
 
   int     maxRegions;       //defines the number maximum number of regions
                             //allowed (determined by user during class construction)
-  int     numRegions;       //the number of regions currently stored by the
+  int     numRegions {0};   //the number of regions currently stored by the
                             //region list
-  int     freeRegion;       //an index into the regionList pointing to the next
+  int     freeRegion {0};   //an index into the regionList pointing to the next
                             //available region in the regionList
 
   //#####################################
@@ -315,7 +315,7 @@ private:
 
   int     *indexTable;      //an array of indexes that point into an external structure
                             //specifying which points belong to a region
-  int     freeBlockLoc;     //points to the next free block of memory in the indexTable
+  int     freeBlockLoc {0}; //points to the next free block of memory in the indexTable
 
   //#####################################
   //###     INPUT DATA PARAMETERS     ###

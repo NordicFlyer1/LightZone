@@ -8,13 +8,10 @@
  */
 
 #include <jni.h>
-#include <stdarg.h>
-#include <stdlib.h>
+#include <cstdarg>
+#include <cstdlib>
 
 #include "segm/msImageProcessor.h"
-
-bool stop_flag = false;
-int percentDone = 0;
 
 void bgLogVar(const char *, va_list) { }
 
@@ -33,7 +30,7 @@ extern "C" JNIEXPORT jbyteArray JNICALL Java_com_lightcrafts_utils_Segment_segme
     env->ReleasePrimitiveArrayCritical(image, data, 0);
 
     processor.SetSpeedThreshold(0.5);
-    processor.Segment(4, 4.0, 20, HIGH_SPEEDUP);
+    processor.Segment(4, 4.0, 20);
 
     int imageSize = height * width * channels;
 

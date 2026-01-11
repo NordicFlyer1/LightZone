@@ -17,8 +17,8 @@ JAVAH_CLASSES:=		com.lightcrafts.utils.Segment
 ROOT:=			../../..
 include			../jni.mk
 
-SEGM_SOURCE:=		segm/ms.cpp segm/msSys.cpp segm/msImageProcessor.cpp segm/RAList.cpp segm/rlist.cpp $(wildcard *.cpp)
-SEGM_INCLUDES:=		segm/tdef.h segm/RAList.h segm/ms.h segm/msImageProcessor.h segm/msSys.h segm/rlist.h
+SEGM_SOURCE:=		segm/ms.cpp segm/msImageProcessor.cpp segm/RAList.cpp segm/rlist.cpp $(wildcard *.cpp)
+SEGM_INCLUDES:=		segm/tdef.h segm/RAList.h segm/ms.h segm/msImageProcessor.h segm/rlist.h
 SEGM_LDFLAGS:=		$(PLATFORM_LDFLAGS)
 
 ifeq ($(UNIVERSAL),1)

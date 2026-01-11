@@ -45,14 +45,14 @@ public:
     //============================
 
     ////////////RAM Label//////////
-    int     label;
+    int     label {-1};
 
     ////////////RAM Weight/////////
-    float   edgeStrength;
-    int     edgePixelCount;
+    float   edgeStrength {0};
+    int     edgePixelCount {0};
 
     ////////////RAM Link///////////
-    RAList  *next;
+    RAList  *next {nullptr};
 
     //=======================
     // *** Public Methods ***
@@ -63,10 +63,10 @@ public:
     /*\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/*/
 
     //***Class Constructor***
-    RAList( void );
+    RAList() = default;
 
     //***Class Destructor***
-    ~RAList( void );
+    ~RAList() = default;
 
     /*/\/\/\/\/\/\/\/\/\/\/\/\*/
     /*  RAM List Manipulation */
