@@ -15,8 +15,8 @@ repositories {
     mavenCentral()
 }
 
-val jetbrainsAnnotation = "org.jetbrains:annotations:24.0.1"
-val lombok = "org.projectlombok:lombok:1.18.38"
+val jetbrainsAnnotation = "org.jetbrains:annotations:26.0.2-1"
+val lombok = "org.projectlombok:lombok:1.18.42"
 dependencies {
     annotationProcessor(jetbrainsAnnotation)
     annotationProcessor(lombok)
@@ -25,9 +25,9 @@ dependencies {
     implementation(files("${project.rootDir}/lightcrafts/lib/jai-lightzone-1.1.3.0.jar"))
     testCompileOnly(jetbrainsAnnotation)
     testImplementation(kotlin("test"))
-    testImplementation("io.kotest:kotest-runner-junit5:5.8.0")
+    testImplementation("io.kotest:kotest-runner-junit5-jvm:5.9.1")
     testImplementation("org.assertj:assertj-core:3.11.1")
-    testImplementation(platform("org.junit:junit-bom:5.10.1"))
+    testImplementation(platform("org.junit:junit-bom:5.14.2"))
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-engine")
     testImplementation("org.junit.jupiter:junit-jupiter-params")

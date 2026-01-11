@@ -59,7 +59,7 @@
     <ivy:retrieve conf="compile"/>
   </target>
 
-  <property name="ivy.version" value="2.5.0"/>
+  <property name="ivy.version" value="2.5.3"/>
   <property name="ivy.jar.dir" value="${basedir}/lib"/>
   <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar"/>
 
