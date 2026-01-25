@@ -3,6 +3,9 @@ plugins {
     id("com.palantir.git-version")
     id("lightzone.java-conventions")
 }
+kotlin {
+    jvmToolchain(21)
+}
 dependencies {
     implementation("com.formdev:flatlaf:3.7")
     implementation("com.formdev:flatlaf-intellij-themes:3.7")
