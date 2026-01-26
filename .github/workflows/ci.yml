@@ -8,7 +8,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-latest, macos-latest, macos-14]
-        java: ['17']
+        java: ['21']
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
@@ -40,18 +40,18 @@ jobs:
       run: |
         export PATH=/msys64/usr/bin/:/msys32/usr/bin/:$PATH
         export MSSDK_HOME=/c/Program\ Files\ \(x86\)/Windows\ Kits/10/Lib/10.0.22621.0
-        gradle windows:jpackage
-        # MSYSTEM=MINGW32 TARGET_ARCH=i686 gradle windows:jpackage
+        ./gradlew jpackage -x test
+        # MSYSTEM=MINGW32 TARGET_ARCH=i686 ./gradlew jpackage -x test
     - name: Build on macOS
       if: startsWith(matrix.os, 'macos')
       run: |
         export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
-        brew install gradle lensfun libomp libraw
+        brew install lensfun libomp libraw
         if [ "${{ matrix.os }}" == "macos-14" ]; then
           export LIBOMP_PATH=/opt/homebrew/opt/libomp
-          TARGET_ARCH=arm64 gradle macos:jpackage
+          TARGET_ARCH=arm64 ./gradlew jpackage -x test
         else
-          gradle macos:jpackage
+          ./gradlew jpackage -x test
         fi
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4

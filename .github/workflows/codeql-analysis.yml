@@ -61,7 +61,7 @@ jobs:
             tidy
 
       - name: Build with Gradle
-        run: gradle build -x test
+        run: ./gradlew build -x test
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v4
