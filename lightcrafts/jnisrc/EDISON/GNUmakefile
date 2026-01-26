@@ -12,6 +12,8 @@ TARGET_BASE:=		Segment
 ##
 JNI_MANUAL_TARGET:=	1
 
+JNI_EXTRA_CFLAGS:=	-std=c++14
+
 JAVAH_CLASSES:=		com.lightcrafts.utils.Segment
 
 ROOT:=			../../..
