@@ -36,6 +36,10 @@ val MAKE = with(os) {
 }
 val versionDetails: groovy.lang.Closure<com.palantir.gradle.gitversion.VersionDetails> by extra
 tasks {
+    // Disable run task since this is a library project, not a standalone application
+    named("run") {
+        enabled = false
+    }
     register<Exec> ("coprocesses") {
         commandLine(MAKE, "-C", "coprocesses", "-j", "-s")
     }
