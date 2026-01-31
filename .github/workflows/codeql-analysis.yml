@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: ["java", "cpp"]
+        language: ["java", "c-cpp"]
 
     steps:
       - name: Checkout repository
@@ -35,12 +35,6 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
-
-      # Initializes the CodeQL tools for scanning.
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v4
-        with:
-          languages: ${{ matrix.language }}
 
       - name: Setup
         run: |
@@ -60,8 +54,22 @@ jobs:
             libtiff-dev \
             tidy
 
-      - name: Build with Gradle
-        run: ./gradlew build -x test
+      # Initializes the CodeQL tools for scanning.
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+
+      - if: ${{ matrix.language == 'java' }}
+        name: Build Java code
+        run: |
+          ./gradlew compileJava
+
+      - if: ${{ matrix.language == 'c-cpp' }}
+        name: Build C and C++ code
+        run: |
+          ./gradlew coprocess
+          ./gradlew jni
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v4
