@@ -35,6 +35,7 @@ val MAKE = with(os) {
     }
 }
 val versionDetails: groovy.lang.Closure<com.palantir.gradle.gitversion.VersionDetails> by extra
+val nativeLibPath = layout.buildDirectory.dir("resources/main/native").get().asFile.absolutePath
 tasks {
     // Disable run task since this is a library project, not a standalone application
     named("run") {
@@ -42,15 +43,50 @@ tasks {
     }
     register<Exec> ("coprocesses") {
         commandLine(MAKE, "-C", "coprocesses", "-j", "-s")
+        doLast {
+            copy {
+                from("products/")
+                include("dcraw_lz*")
+                into(nativeLibPath)
+            }
+        }
     }
     register<Exec> ("cleanCoprocesses") {
         commandLine(MAKE, "-C", "coprocesses", "-j", "-s", "clean")
+        doLast {
+            val dcraw = File(nativeLibPath, "dcraw_lz*")
+            if (dcraw.exists()) {
+                dcraw.delete()
+            }
+        }
+    }
+    jni {
+        doLast {
+            copy {
+                from("products/")
+                include("share/**")
+                include("*.dll")
+                include("*.dylib")
+                include("*.jnilib")
+                include("*.so")
+                into(nativeLibPath)
+            }
+        }
+    }
+    cleanJni {
+        doLast {
+            val nativeFiles = File(nativeLibPath).listFiles { _, name ->
+                name.endsWith(".dll") || name.endsWith(".dylib") || name.endsWith(".jnilib") || name.endsWith(".so")
+                        || name == "share"
+            }
+            nativeFiles?.forEach { it.deleteRecursively() }
+        }
     }
     register<Task> ("revision") {
         val gitHash = versionDetails().gitHashFull // full 40-character Git commit hash
         project.logger.lifecycle("Git hash: ${gitHash}")
 
-        val dirProvider = layout.buildDirectory.dir("resources/main/com/lightcrafts/utils/resources")
+        val dirProvider = layout.buildDirectory.dir("revision")
         val dir = dirProvider.get().asFile
         mkdir(dir)
         val file = File("$dir/Revision")
@@ -61,17 +97,11 @@ tasks {
     build {
         dependsOn("coprocesses", "revision")
     }
-    clean {
-        dependsOn("cleanCoprocesses")
+    test {
+        dependsOn("jni")
+        jvmArgs("-Djava.library.path=$nativeLibPath")
     }
-    processResources {
-        from("products/") {
-            include("share/**")
-            include("dcraw_lz*")
-            include("*.dll")
-            include("*.dylib")
-            include("*.jnilib")
-            into("native")
-        }
+    clean {
+        dependsOn("cleanCoprocesses", "cleanJni")
     }
 }
