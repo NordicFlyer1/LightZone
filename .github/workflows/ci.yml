@@ -40,8 +40,8 @@ jobs:
       run: |
         export PATH=/msys64/usr/bin/:/msys32/usr/bin/:$PATH
         export MSSDK_HOME=/c/Program\ Files\ \(x86\)/Windows\ Kits/10/Lib/10.0.22621.0
-        ./gradlew jpackage -x test
-        # MSYSTEM=MINGW32 TARGET_ARCH=i686 ./gradlew jpackage -x test
+        ./gradlew jpackage
+        # MSYSTEM=MINGW32 TARGET_ARCH=i686 ./gradlew jpackage
     - name: Build on macOS
       if: startsWith(matrix.os, 'macos')
       run: |
@@ -49,9 +49,9 @@ jobs:
         brew install lensfun libomp libraw
         if [ "${{ matrix.os }}" == "macos-14" ]; then
           export LIBOMP_PATH=/opt/homebrew/opt/libomp
-          TARGET_ARCH=arm64 ./gradlew jpackage -x test
+          TARGET_ARCH=arm64 ./gradlew jpackage
         else
-          ./gradlew jpackage -x test
+          ./gradlew jpackage
         fi
     - name: Build on Linux
       if: matrix.os == 'ubuntu-latest'
@@ -70,7 +70,7 @@ jobs:
           libraw-dev \
           libtiff-dev \
           tidy
-        ./gradlew build -x test
+        ./gradlew build
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
